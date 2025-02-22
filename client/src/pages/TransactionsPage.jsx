@@ -1,11 +1,8 @@
 import React from "react";
+import TransactionsList from "../components/TransactionsList";
 
 const TransactionsPage = () => {
-  return (
-    <div>
-      <h1>TransactionsPage</h1>
-    </div>
-  );
+  return <TransactionsList />;
 };
 
 export default TransactionsPage;
