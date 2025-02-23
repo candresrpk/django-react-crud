@@ -1,21 +1,50 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { createTransaction } from "../api/transactionsApi";
-import { useNavigate } from "react-router-dom";
+import {
+  createTransaction,
+  updateTransaction,
+  getTransaction,
+} from "../api/transactionsApi";
+import { data, useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-hot-toast";
 
 const TransactionFormPage = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
+    setValue,
   } = useForm();
 
   const navigate = useNavigate();
+  const { id } = useParams();
 
   const submitTransaction = handleSubmit(async (data) => {
-    const rest = await createTransaction(data);
+    if (id) {
+      await updateTransaction(id, data);
+    } else {
+      await createTransaction(data);
+      toast.success("Transaction created successfully");
+    }
     navigate("/");
   });
+
+  const fetchTransaction = async (id) => {
+    if (data) {
+      const { data } = await getTransaction(id);
+      setValue("title", data.title);
+      setValue("category", data.category);
+      setValue("amount", data.amount);
+    } else {
+      window.location.reload();
+    }
+  };
+
+  useEffect(() => {
+    if (id) {
+      fetchTransaction(id);
+    }
+  }, []);
 
   return (
     <div className="container">
